@@ -1,0 +1,12 @@
+{
+  "name": "@tgsnake/step",
+  "version": "1.0.0",
+  "description": "Module determines steps for ",
+  "main": "index.js",
+  "repository": "https://github.com/tgsnake/step",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^18.0.3",
+    "tgsnake": "^2.0.0"
+  }
+}
