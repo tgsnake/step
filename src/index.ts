@@ -2,10 +2,14 @@ import type { Context } from "tgsnake";
 
 type callBack = () => {};
 
-export type stepAddon = (
-  ctx: Context.Combine<Context.MessageContext, {}>,
-  data: any[]
-) => { data: any[]; performed: boolean };
+type NextFunction = boolean;
+
+export type Done = () => NextFunction;
+export type PluginFunc = (instance : Step,next : Done) => (NextFunction | any);
+
+const done : Done = () => {
+  return false;
+}
 
 class User {
   constructor(readonly userId: bigint, public step: string) {}
@@ -13,8 +17,6 @@ class User {
 
 export class Step {
   private userPool: User[] = [];
-  private addonData: any[] = [];
-  private i: number = 0;
   //@ts-ignore
   private ctx: Context.Combine<Context.MessageContext, {}>;
   private performed: boolean = false;
@@ -22,7 +24,6 @@ export class Step {
     this.config ||= {};
     this.config.defaultMessage = this?.config?.defaultMessage || "";
   }
-
   set(ctx: Context.Combine<Context.MessageContext, {}>) {
     this.ctx = ctx;
     return this;
@@ -48,19 +49,20 @@ export class Step {
     if (user === -1) return;
     this.userPool[user].step = s;
   }
-  addon(a: stepAddon) {
-    if (this.performed) return this;
-    if (!this.addonData[this.i]) this.addonData.push([]);
-    const retunValue = a(this.ctx, this.addonData[this.i]);
-    this.addonData[this.i] = retunValue.data;
-    this.performed = retunValue.performed;
-    this.i++;
-    return this;
+  async plugin(pluginFunc : PluginFunc){
+    if(this.performed) return;
+    const returnValue = await pluginFunc(this,done);
+    this.performed = returnValue === undefined;
+    return;
+  }
+  noStep(){
+    const user = this.userPool.findIndex((x) => x.userId === this.ctx.from.id);
+    if (user === -1) return;
+    this.userPool[user].step = "";
   }
   end() {
     if (!this.performed && this?.config?.defaultMessage)
       this.ctx.reply(this.config.defaultMessage);
-    this.i = 0;
     this.performed = false;
   }
 }
