@@ -1,11 +1,18 @@
 {
   "name": "@tgsnake/step",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "step module for tgsnake",
   "main": "index.js",
   "repository": "https://github.com/tgsnake/step",
   "license": "MIT",
   "dependencies": {
     "tgsnake": "^2.0.0"
-  }
+  },
+  "keywords": [
+    "tgsnake",
+    "telegram bot",
+    "telegram",
+    "bot",
+    "step"
+  ]
 }
