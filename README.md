@@ -240,6 +240,8 @@ await step.plugin(async (instance,next)=>{
        }else{
           await ctx.reply("No numbers allowed");
        }
+   }else{
+     return done();
    }
 });
 
