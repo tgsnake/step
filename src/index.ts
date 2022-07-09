@@ -1,11 +1,11 @@
 import type { Context } from "tgsnake";
 
-type callBack = () => {};
+type callBack = () => void;
 
 type NextFunction = boolean;
 
 export type Done = () => NextFunction;
-export type PluginFunc = (instance : Step,next : Done) => (NextFunction | any);
+export type PluginFunc = (instance : Step,done : Done) => (NextFunction | any);
 
 const done : Done = () => {
   return false;
@@ -59,6 +59,11 @@ export class Step {
     const user = this.userPool.findIndex((x) => x.userId === this.ctx.from.id);
     if (user === -1) return;
     this.userPool[user].step = "";
+  }
+  getStep() : string | boolean {
+    const user = this.userPool.find((x) => x.userId === this.ctx.from.id);
+    if (!user) return false;
+    return user.step;
   }
   end() {
     if (!this.performed && this?.config?.defaultMessage)
