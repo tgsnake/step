@@ -43,7 +43,6 @@ bot.on("message",(ctx)=>{
           await ctx.reply(`Your numbers have been added up ${number} \n Send /start to restart.`);
           number = 0;
           step.noStep();
-          // We are setting a pointless step here so the bot won't respond, you can create another step to handle this step. 
       })
       .end();
 });
